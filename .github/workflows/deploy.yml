@@ -3,31 +3,36 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # Gatilha a ação quando você fizer commit na branch main
+      - main  # Executa o deploy sempre que houver commit na branch main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
+      # Faz checkout do código da branch main
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Configura o Node (sem usar cache de dependências)
       - name: Set up Node
         uses: actions/setup-node@v3
         with:
-          node-version: '18'     # Versão do Node
-          cache: 'npm'
+          node-version: '18'
 
+      # Instala as dependências definidas no package.json
       - name: Install dependencies
         run: npm install
 
+      # Executa o build de produção
       - name: Build
         run: npm run build
 
+      # Cria o arquivo .nojekyll para garantir que o GitHub Pages sirva os arquivos corretamente
       - name: Add .nojekyll
         run: touch dist/.nojekyll
 
+      # Publica o conteúdo da pasta dist/ na branch gh-pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
