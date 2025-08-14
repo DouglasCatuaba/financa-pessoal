@@ -1,0 +1,10 @@
+/*
+ * Global stylesheet for the Finança Pessoal app.
+ *
+ * Tailwind’s base, components and utilities layers are imported here.
+ */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom global styles can be added below if necessary. */
