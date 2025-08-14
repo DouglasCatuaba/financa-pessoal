@@ -3,38 +3,55 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # Executa o deploy sempre que houver commit na branch main
+      - main
+  workflow_dispatch:
+
+# Permissões necessárias para publicar no Pages via Actions
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Evita concorrência de deploys
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
-
     steps:
-      # Faz checkout do código da branch main
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      # Configura o Node (sem usar cache de dependências)
       - name: Set up Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: '18'
 
-      # Instala as dependências definidas no package.json
       - name: Install dependencies
         run: npm install
 
-      # Executa o build de produção
       - name: Build
         run: npm run build
 
-      # Cria o arquivo .nojekyll para garantir que o GitHub Pages sirva os arquivos corretamente
+      # Garante que o Pages não aplique Jekyll e não quebre o SW do PWA
       - name: Add .nojekyll
         run: touch dist/.nojekyll
 
-      # Publica o conteúdo da pasta dist/ na branch gh-pages
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
+      # Publica a pasta dist como artefato para o Pages
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./dist
+          path: ./dist
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
