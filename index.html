@@ -1,15 +1,16 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#2563eb" />
     <title>Finança Pessoal</title>
-    <!-- Link to the generated manifest; Vite will handle the correct path based on the base option. -->
-    <link rel="manifest" href="/financa-pessoal/manifest.webmanifest" />
+    <!-- Caminho RELATIVO para funcionar no subdiretório do Pages -->
+    <link rel="manifest" href="manifest.webmanifest" />
   </head>
-  <body class="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+  <body class="bg-gray-50 dark:bg-gray-900">
     <div id="root"></div>
-    <!-- Entry point of the React application -->
+    <!-- Vite reescreve esse import no build respeitando a base -->
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>
